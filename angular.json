@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/rental-web-ui",
+            "outputPath": "dist",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -26,15 +26,22 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
+              "src/assets",
               {
                 "glob": "**/*",
                 "input": "public"
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/assets/css/main.css",
+              "src/assets/vendor/bootstrap/css/bootstrap.min.css",
+              "src/assets/vendor/bootstrap-icons/bootstrap-icons.css",
+              "src/assets/vendor/aos/aos.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/main-web.js",
+              "src/assets/vendor/aos/aos.js"
+            ]
           },
           "configurations": {
             "production": {
