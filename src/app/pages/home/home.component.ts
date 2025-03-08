@@ -20,12 +20,11 @@ import { AppConstants } from '../../class/app-constants/app-constants';
 export class HomeComponent {
   contactForm!: FormGroup;
   errorMessage: string = '';
-  submissionStatus: string = '';  
-  private appConstants = AppConstants
+  submissionStatus: string = '';
+  private appConstants = AppConstants;
   captchaResponse: string | null = null;
   reCaptchaKey = this.appConstants.reCaptchaKey;
   loading: boolean = false;
-
 
   constructor(
     private fb: FormBuilder,
@@ -38,7 +37,15 @@ export class HomeComponent {
     this.contactForm = this.fb.group({
       agencyName: ['', Validators.required],
       name: ['', Validators.required],
-      phone: ['', [Validators.required]],
+      phone: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(
+            /^\+?[1-9]\d{0,2}[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/
+          ),
+        ],
+      ],
       email: ['', [Validators.required, Validators.email]],
       message: ['', Validators.required],
       topic: [false, Validators.required],
@@ -56,7 +63,8 @@ export class HomeComponent {
         .subscribe({
           next: (response) => {
             // console.log('API Response:', response);
-            this.submissionStatus = 'Request submission successful. Thank you for contacting us!';
+            this.submissionStatus =
+              'Request submission successful. Thank you for contacting us!';
             this.contactForm.reset(); // Reset the form
             this.captchaResponse = null;
             // Hide submission status after 5 seconds

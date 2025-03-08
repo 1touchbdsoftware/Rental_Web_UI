@@ -593,13 +593,13 @@
                     >Phone</label
                   >
                 </div>
-                <div
-                  *ngIf="
-                    contactForm.controls['phone'].invalid &&
-                    contactForm.controls['phone'].touched
-                  "
-                >
-                  <small class="text-danger">Enter a valid phone number</small>
+                <div *ngIf="contactForm.controls['phone'].touched">
+                  <small class="text-danger" *ngIf="contactForm.controls['phone'].errors?.['required']">
+                    Phone number is required
+                  </small>
+                  <small class="text-danger" *ngIf="contactForm.controls['phone'].errors?.['pattern']">
+                    Enter a valid phone number
+                  </small>
                 </div>
               </div>
             </div>
@@ -621,13 +621,13 @@
                     >Email</label
                   >
                 </div>
-                <div
-                  *ngIf="
-                    contactForm.controls['email'].invalid &&
-                    contactForm.controls['email'].touched
-                  "
-                >
-                  <small class="text-danger">Enter a valid email</small>
+                <div *ngIf="contactForm.controls['email'].touched">
+                  <small class="text-danger" *ngIf="contactForm.controls['email'].errors?.['required']">
+                    Email is required
+                  </small>
+                  <small class="text-danger" *ngIf="contactForm.controls['email'].errors?.['email']">
+                    Enter a valid email
+                  </small>
                 </div>
               </div>
             </div>
