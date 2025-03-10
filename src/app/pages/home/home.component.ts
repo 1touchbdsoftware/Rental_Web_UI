@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { ContactUsService } from '../../services/contact-us.service';
 import { RecaptchaModule } from 'ng-recaptcha';
 import { AppConstants } from '../../class/app-constants/app-constants';
-
+declare var grecaptcha: any;
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -53,7 +53,7 @@ export class HomeComponent {
       recaptcha: ['', Validators.required],
     });
   }
-  sendFormData() {
+  sendFormData(): void {
     //console.log(this.contactForm.value);
     this.errorMessage = '';
     if (this.contactForm.valid) {
@@ -61,21 +61,43 @@ export class HomeComponent {
       this.contactUsService
         .submitContactForm(this.contactForm.value)
         .subscribe({
-          next: (response) => {
-            // console.log('API Response:', response);
-            this.submissionStatus =
-              'Request submission successful. Thank you for contacting us!';
-            this.contactForm.reset(); // Reset the form
-            this.captchaResponse = null;
-            // Hide submission status after 5 seconds
-            setTimeout(() => {
-              this.submissionStatus = '';
-            }, 5000);
-            this.loading = false;
+          next: (response:any) => {
+            if (response?.data?.status) {
+              this.submissionStatus =
+                'Request submission successful. Thank you for contacting us!';
+              this.contactForm.reset(); // Reset the form
+              this.captchaResponse = null;
+              // Hide submission status after 5 seconds
+              setTimeout(() => {
+                this.submissionStatus = '';
+              }, 5000);
+              this.loading = false;
+              if (typeof grecaptcha !== "undefined") {
+                grecaptcha.reset();
+              }
+            } else {
+              if (response?.data?.isDuplicateEmail) {
+                this.errorMessage = "This email is already registered. Please use another email.";
+                this.loading = false;
+                if (typeof grecaptcha !== "undefined") {
+                  grecaptcha.reset();
+                }
+              }
+              if (response?.data?.isDuplicateContact) {
+                this.errorMessage = "This phone number is already registered. Please use another phone number.";
+                this.loading = false;
+                if (typeof grecaptcha !== "undefined") {
+                  grecaptcha.reset();
+                }
+              }
+            }
           },
           error: (err) => {
-            this.errorMessage = err.message;
+            this.errorMessage = "Try again. Something went wrong. Unable to send the request.";
             this.loading = false;
+            if (typeof grecaptcha !== "undefined") {
+              grecaptcha.reset();
+            }
           },
         });
     } else {
